@@ -2,15 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { ClickMeComponent } from './click-me/click-me.component';
+import { ClickMeModule } from './click-me/click-me.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    ClickMeComponent
+    AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    ClickMeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
