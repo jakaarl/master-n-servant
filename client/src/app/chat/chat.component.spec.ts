@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ClickMeComponent } from './click-me.component';
+import { ChatComponent } from './chat.component';
 
-describe('ClickMeComponent', () => {
-  let component: ClickMeComponent;
-  let fixture: ComponentFixture<ClickMeComponent>;
+describe('ChatComponent', () => {
+  let component: ChatComponent;
+  let fixture: ComponentFixture<ChatComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ClickMeComponent ]
+      declarations: [ ChatComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ClickMeComponent);
+    fixture = TestBed.createComponent(ChatComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -2,15 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { ClickMeModule } from './click-me/click-me.module';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ChatComponent
   ],
   imports: [
-    BrowserModule,
-    ClickMeModule
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]
