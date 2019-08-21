@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import * as sio from 'socket.io-client';
+import * as socketClient from 'socket.io-client';
 import { Observable } from 'rxjs';
+import { environment} from '../environments/environment';
 
-const serverUri = "";
+const serverUri = environment.messageServerUri;
 
 export enum Action {
   JOIN,
@@ -26,7 +27,7 @@ export class MessageService {
   private socket: SocketIOClient.Socket;
 
   public initSocket(): void {
-    this.initWithSocket(sio(serverUri));
+    this.initWithSocket(socketClient(serverUri));
   }
 
   public initWithSocket(socket: SocketIOClient.Socket) {
