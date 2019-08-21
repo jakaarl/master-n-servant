@@ -10,8 +10,8 @@ import java.util.*
 
 class Room(val name: String, val id: UUID) {
 
-    private val converter: MessageConverter = MessageConverter(ObjectMapper())
-    private val sessions: MutableMap<String, WebSocketServerSession> = mutableMapOf()
+    private val converter = MessageConverter(ObjectMapper())
+    private val sessions = mutableMapOf<String, WebSocketServerSession>()
 
     suspend fun join(nick: String, session: WebSocketServerSession) {
         if (sessions.containsKey(nick)) {
