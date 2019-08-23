@@ -26,12 +26,12 @@ export class MessageService {
 
   private socket: SocketIOClient.Socket;
 
-  public initSocket(): void {
-    this.initWithSocket(socketClient(serverUri));
+  constructor(socket: SocketIOClient.Socket) {
+    this.socket = socket;
   }
 
-  public initWithSocket(socket: SocketIOClient.Socket) {
-    this.socket = socket;
+  static withPath(path: string): MessageService {
+    return new MessageService(socketClient(serverUri, { path, transports: ['websocket'] }));
   }
 
   public send(message: Message): void {

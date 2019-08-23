@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Event, MessageService} from '../message.service';
 
 @Component({
   selector: 'app-chat',
@@ -7,9 +8,21 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ChatComponent implements OnInit {
 
-  constructor() { }
+  private messageService: MessageService;
+
+  constructor() {
+    this.messageService = MessageService.withPath('/ws');
+  }
 
   ngOnInit() {
+    console.log('Initializing chat component');
+    this.messageService.onEvent(Event.CONNECT).subscribe(() => {
+      console.log('Message service connected.');
+    });
+    this.messageService.onMessage().subscribe((message) => {
+      console.log(message);
+    });
+    this.messageService.send({ payload: 'Hello world!'});
   }
 
 }

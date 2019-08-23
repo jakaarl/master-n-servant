@@ -1,25 +1,17 @@
-import { TestBed } from '@angular/core/testing';
-
 import { Event, Message, MessageService } from './message.service';
 import SocketMock from 'socket.io-mock';
-import createSpy = jasmine.createSpy;
 
 describe('MessageService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-  });
-
   describe('socket handlers', () => {
     let service: MessageService;
     let socket;
 
     beforeEach(() => {
-      service = TestBed.get(MessageService);
       socket = new SocketMock();
-      service.initWithSocket(socket);
+      service = new MessageService(socket);
     });
 
-    it('should observer messages', (done) => {
+    it('should observe messages', (done) => {
       const sent: Message = { payload: 'Hello there!' };
       service.onMessage().subscribe((message) => {
         expect(message).toEqual(sent);
