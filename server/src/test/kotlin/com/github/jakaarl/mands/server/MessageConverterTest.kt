@@ -10,26 +10,36 @@ class MessageConverterTest {
     private val converter = MessageConverter(ObjectMapper())
 
     @Test
-    fun convertsJoinMessage(): Unit {
-        val message = JoinMessage(UUID.randomUUID(), "tester")
+    fun convertsJoinCommand() {
+        val message = JoinCommand(UUID.randomUUID(), "tester")
         val serialized = converter.serialize(message)
         val deserialized = converter.deserialize(serialized)
         assertEquals(message, deserialized)
     }
 
     @Test
-    fun convertsLeaveMessage(): Unit {
-        val message = LeaveMessage(UUID.randomUUID(), "tester")
+    fun convertsLeaveCommand() {
+        val message = LeaveCommand(UUID.randomUUID(), "tester")
         val serialized = converter.serialize(message)
         val deserialized = converter.deserialize(serialized)
         assertEquals(message, deserialized)
     }
 
     @Test
-    fun convertsBroadcastMessage(): Unit {
-        val message = BroadcastMessage(UUID.randomUUID(), "tester", "hi mom!")
+    fun convertsBroadcastCommand() {
+        val message = BroadcastCommand(UUID.randomUUID(), "tester", "hi mom!")
         val serialized = converter.serialize(message)
         val deserialized = converter.deserialize(serialized)
         assertEquals(message, deserialized)
     }
+
+    @Test
+    fun convertsCreateRoomCommand() {
+        val message = CreateRoomCommand("Test room")
+        val serialized = converter.serialize(message)
+        val deserialized = converter.deserialize(serialized)
+        assertEquals(message, deserialized)
+    }
+
+    // TODO parameterized tests
 }

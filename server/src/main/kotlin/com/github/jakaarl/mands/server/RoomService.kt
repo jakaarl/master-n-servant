@@ -5,6 +5,12 @@ import java.util.*
 
 class RoomService(private val rooms: MutableMap<UUID, Room> = mutableMapOf()) {
 
+    fun listRooms(): List<Pair<UUID, String>> {
+        return rooms.entries.map { entry ->
+            Pair(entry.key, entry.value.name)
+        }
+    }
+
     fun getRoom(id: UUID): Room {
         return rooms[id] ?: throw IllegalArgumentException("No such room: ${id}")
     }

@@ -4,28 +4,36 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
 import io.ktor.features.DefaultHeaders
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.Frame
 import io.ktor.http.cio.websocket.readText
-import io.ktor.request.receiveParameters
-import io.ktor.response.respondText
+import io.ktor.jackson.jackson
+import io.ktor.request.receive
+import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.sessions.*
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.time.Duration
-import java.util.*
 
 data class Session(val nick: String)
 
 class KtorApplication {
+    companion object {
+        val LOGGER: Logger = LoggerFactory.getLogger(KtorApplication::class.java)
+    }
 
     private val roomService = RoomService()
     private val converter = MessageConverter(ObjectMapper())
@@ -34,6 +42,23 @@ class KtorApplication {
         with (application) {
             install(CallLogging)
             install(DefaultHeaders)
+            install(ContentNegotiation) {
+                jackson {  }
+            }
+            install(CORS) {
+                allowCredentials = true
+                allowSameOrigin = true
+                header(HttpHeaders.Accept)
+                header(HttpHeaders.AccessControlAllowOrigin)
+                header(HttpHeaders.AccessControlAllowCredentials)
+                header(HttpHeaders.ContentType)
+                header(HttpHeaders.Origin)
+                maxAge = Duration.ofHours(24)
+                method(HttpMethod.Get)
+                method(HttpMethod.Post)
+                // TODO: proper CORS host configuration
+                host(host = "localhost:4200", schemes = listOf("http", "ws"))
+            }
             install(Sessions) {
                 cookie<Session>("SESSION") // TODO: encrypt cookie
             }
@@ -49,29 +74,31 @@ class KtorApplication {
     }
 
     private fun Routing.root() {
-        post("/room") {
-            val parameters = call.receiveParameters()
-            val name = parameters["name"] ?: throw IllegalArgumentException("Missing 'name' parameter.")
-            val room = roomService.createRoom(name)
-            call.respondText(text = room.id.toString(), status = HttpStatusCode.Created)
+        get("/rooms") {
+            val rooms = roomService.listRooms()
+            call.respond(rooms)
         }
-        webSocket("/room/{roomId}") {
-            val session = call.sessions.get<Session>() ?: throw IllegalStateException("No session present.")
-            val roomId = call.parameters["roomId"]
-            val room = roomService.getRoom(UUID.fromString(roomId))
+        post("/rooms") {
+            val createRoom = call.receive<CreateRoomCommand>()
+            val room = roomService.createRoom(createRoom.name)
+            call.respond(HttpStatusCode.Created, room)
+        }
+
+        webSocket("/ws") {
+            LOGGER.info("Woot web socket!")
             try {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
                         when (val message = converter.deserialize(frame.readText())) {
-                            is JoinMessage -> room.join(message.nick, this)
-                            is LeaveMessage -> room.leave(message.nick)
-                            is BroadcastMessage -> room.broadcast(message.sender, message.message)
-                        }
+                            is JoinCommand -> roomService.getRoom(message.room).join(message.nick, this)
+                            is LeaveCommand -> roomService.getRoom(message.room).leave(message.nick)
+                            is BroadcastCommand -> roomService.getRoom(message.room).broadcast(message.sender, message.message)
+                        } // TODO: default case -> error
                     }
                 }
             } finally {
-                room.leave(session.nick)
-                call.sessions.clear<Session>()
+                //room.leave(session.nick)
+                //call.sessions.clear<Session>()
             }
         }
     }

@@ -9,11 +9,11 @@ class MessageConverter(val objectMapper: ObjectMapper) {
         objectMapper.registerModule(KotlinModule())
     }
 
-    fun serialize(message: Message): String {
-        return objectMapper.writeValueAsString(message);
+    fun serialize(message: Any): String {
+        return objectMapper.writeValueAsString(message)
     }
 
-    fun deserialize(message: String): Message {
-        return objectMapper.readValue(message, Message::class.java)
+    fun deserialize(message: String): Command {
+        return objectMapper.readValue(message, Command::class.java)
     }
 }
