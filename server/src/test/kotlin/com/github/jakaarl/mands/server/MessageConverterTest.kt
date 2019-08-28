@@ -34,8 +34,8 @@ class MessageConverterTest {
     }
 
     @Test
-    fun convertsCreateRoomCommand() {
-        val message = CreateRoomCommand("Test room")
+    fun convertsCreatePlayCommand() {
+        val message = CreatePlayCommand("Test room")
         val serialized = converter.serialize(message)
         val deserialized = converter.deserialize(serialized)
         assertEquals(message, deserialized)

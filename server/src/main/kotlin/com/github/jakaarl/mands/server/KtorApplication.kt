@@ -12,7 +12,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.cio.websocket.Frame
-import io.ktor.http.cio.websocket.readText
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.respond
@@ -20,7 +19,6 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
-import io.ktor.sessions.*
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
@@ -28,15 +26,13 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
 
-data class Session(val nick: String)
-
 class KtorApplication {
     companion object {
         val LOGGER: Logger = LoggerFactory.getLogger(KtorApplication::class.java)
     }
 
-    private val roomService = RoomService()
     private val converter = MessageConverter(ObjectMapper())
+    private val playService = PlayService()
 
     fun module(application: Application) {
         with (application) {
@@ -59,9 +55,9 @@ class KtorApplication {
                 // TODO: proper CORS host configuration
                 host(host = "localhost:4200", schemes = listOf("http", "ws"))
             }
-            install(Sessions) {
-                cookie<Session>("SESSION") // TODO: encrypt cookie
-            }
+            //install(Sessions) {
+                //cookie<Session>("SESSION") // TODO: encrypt cookie
+            //}
             install(WebSockets) {
                 pingPeriod = Duration.ofSeconds(60)
                 timeout = Duration.ofSeconds(10)
@@ -74,30 +70,31 @@ class KtorApplication {
     }
 
     private fun Routing.root() {
-        get("/rooms") {
-            val rooms = roomService.listRooms()
-            call.respond(rooms)
+        get("/plays") {
+            LOGGER.debug("Listing plays.")
+            val plays = playService.listPlays()
+            call.respond(plays)
         }
-        post("/rooms") {
-            val createRoom = call.receive<CreateRoomCommand>()
-            val room = roomService.createRoom(createRoom.name)
-            call.respond(HttpStatusCode.Created, room)
+        post("/plays") {
+            val createPlay = call.receive<CreatePlayCommand>()
+            LOGGER.debug("Creating play ${createPlay.name}.")
+            val play = playService.createPlay(createPlay.name)
+            call.respond(HttpStatusCode.Created, play)
         }
 
         webSocket("/ws") {
-            LOGGER.info("Woot web socket!")
+            LOGGER.debug("Web socket connected.")
             try {
                 incoming.consumeEach { frame ->
                     if (frame is Frame.Text) {
-                        when (val message = converter.deserialize(frame.readText())) {
+                        /*when (val message = converter.deserialize(frame.readText())) {
                             is JoinCommand -> roomService.getRoom(message.room).join(message.nick, this)
                             is LeaveCommand -> roomService.getRoom(message.room).leave(message.nick)
                             is BroadcastCommand -> roomService.getRoom(message.room).broadcast(message.sender, message.message)
-                        } // TODO: default case -> error
+                        } */ // TODO: default case -> error
                     }
                 }
             } finally {
-                //room.leave(session.nick)
                 //call.sessions.clear<Session>()
             }
         }
