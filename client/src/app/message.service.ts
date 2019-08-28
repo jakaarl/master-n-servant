@@ -3,7 +3,7 @@ import * as socketClient from 'socket.io-client';
 import { Observable } from 'rxjs';
 import { environment} from '../environments/environment';
 
-const serverUri = environment.messageServerUri;
+const wsServerUri = `${environment.backendServer}/ws`;
 
 export enum Action {
   JOIN,
@@ -31,7 +31,7 @@ export class MessageService {
   }
 
   static withPath(path: string): MessageService {
-    return new MessageService(socketClient(serverUri, { path, transports: ['websocket'] }));
+    return new MessageService(socketClient(wsServerUri, { path, transports: ['websocket'] }));
   }
 
   public send(message: Message): void {

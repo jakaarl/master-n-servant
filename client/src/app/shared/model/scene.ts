@@ -11,8 +11,7 @@ export class Scene {
 
 export enum DisplayMode {
   STRETCH,
-  CENTER,
-  FILL_WIDTH
+  CENTER
 }
 export class Background {
   constructor(readonly href: URL, readonly width: number, readonly height: number, readonly mode: DisplayMode = DisplayMode.STRETCH) {

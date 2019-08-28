@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  messageServerUri: 'http://localhost:8080'
+  backendServer: 'http://localhost:8080'
 };
 
 /*

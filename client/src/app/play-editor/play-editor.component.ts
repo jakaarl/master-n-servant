@@ -21,7 +21,12 @@ export class PlayEditorComponent implements OnInit {
   }
 
   onSubmit(playData) {
-    console.log('Submitted!');
+    this.playService.createPlay(playData.name).subscribe(play => {
+      console.log(`Created play: ${play}`);
+      this.editPlay.reset();
+    }, error => {
+      console.log(error);
+    });
   }
 
 }
