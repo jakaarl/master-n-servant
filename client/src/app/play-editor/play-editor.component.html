@@ -1,13 +1,13 @@
 <div>
   <form [formGroup]="editPlay" (ngSubmit)="onSubmit(editPlay.value)">
     <div>
-      <label for="name">
+      <label for="title">
         Name
       </label>
-      <input id="name" type="text" formControlName="name">
+      <input id="title" type="text" formControlName="title">
     </div>
     <div>
-      <button class="button" type="submit">Create</button>
+      <button class="button" type="submit">Update</button>
     </div>
   </form>
 </div>

@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { ChatComponent } from './chat/chat.component';
 import { PlayEditorComponent } from './play-editor/play-editor.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PlayListComponent } from './play-list/play-list.component';
@@ -17,7 +16,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    ChatComponent,
     PlayEditorComponent,
     PlayListComponent,
   ],

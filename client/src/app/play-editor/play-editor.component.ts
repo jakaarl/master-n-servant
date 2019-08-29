@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+
+import { Play } from '../shared/model/play';
 import { PlayService } from '../play.service';
 
 @Component({
@@ -10,20 +11,22 @@ import { PlayService } from '../play.service';
 })
 export class PlayEditorComponent implements OnInit {
 
+  @Input() play: Play;
   editPlay: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private playService: PlayService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, private playService: PlayService) {
     this.editPlay = this.formBuilder.group({
-      name: ''
+      title: ''
     });
   }
 
   ngOnInit() {
+    this.editPlay.controls.title.setValue(this.play.title);
   }
 
   onSubmit(playData) {
-    this.playService.createPlay(playData.name).subscribe(_ => {
-      this.router.navigate(['/plays']);
+    this.playService.updatePlay(playData).subscribe(edited => {
+      this.play = edited;
     }, error => {
       console.log(error);
     });
