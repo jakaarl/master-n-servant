@@ -1,19 +1,19 @@
 import { TestBed, async } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
-import { PlayEditorComponent } from './play-editor/play-editor.component';
-import {HttpClientModule} from '@angular/common/http';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
-        AppComponent,
-        PlayEditorComponent
+        AppComponent
       ],
       imports: [
         HttpClientModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterModule.forRoot([])
       ]
     }).compileComponents();
   }));
@@ -24,16 +24,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'Master-n-Servant'`, () => {
+  it(`should have as title 'Master and Servant'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('Master-n-Servant');
+    expect(app.title).toEqual('Master and Servant');
   });
 
   it('should render title in a h1 tag', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('h1').textContent).toContain('Welcome to Master-n-Servant!');
+    expect(compiled.querySelector('h1').textContent).toContain('Welcome to Master and Servant!');
   });
 });

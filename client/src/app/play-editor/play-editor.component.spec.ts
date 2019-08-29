@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 import { PlayEditorComponent } from './play-editor.component';
-import { HttpClientModule } from '@angular/common/http';
 
 describe('PlayEditorComponent', () => {
   let component: PlayEditorComponent;
@@ -13,7 +14,8 @@ describe('PlayEditorComponent', () => {
       declarations: [ PlayEditorComponent ],
       imports: [
         HttpClientModule, // required by PlayService
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        RouterModule.forRoot([])
       ]
     })
     .compileComponents();
