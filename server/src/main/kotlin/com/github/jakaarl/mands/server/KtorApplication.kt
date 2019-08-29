@@ -15,10 +15,7 @@ import io.ktor.http.cio.websocket.Frame
 import io.ktor.jackson.jackson
 import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
-import io.ktor.routing.routing
+import io.ktor.routing.*
 import io.ktor.websocket.WebSockets
 import io.ktor.websocket.webSocket
 import kotlinx.coroutines.channels.consumeEach
@@ -52,6 +49,7 @@ class KtorApplication {
                 maxAge = Duration.ofHours(24)
                 method(HttpMethod.Get)
                 method(HttpMethod.Post)
+                method(HttpMethod.Patch)
                 // TODO: proper CORS host configuration
                 host(host = "localhost:4200", schemes = listOf("http", "ws"))
             }
@@ -80,6 +78,12 @@ class KtorApplication {
             LOGGER.debug("Creating play ${createPlay.name}.")
             val play = playService.createPlay(createPlay.name)
             call.respond(HttpStatusCode.Created, play)
+        }
+        patch("/plays") {
+            val updatePlay = call.receive<UpdatePlayCommand>()
+            LOGGER.debug("Updating play ${updatePlay.play.id}.")
+            val updated = playService.updatePlay(updatePlay.play)
+            call.respond(HttpStatusCode.OK, updated)
         }
 
         webSocket("/ws") {

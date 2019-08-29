@@ -10,32 +10,17 @@ class MessageConverterTest {
     private val converter = MessageConverter(ObjectMapper())
 
     @Test
-    fun convertsJoinCommand() {
-        val message = JoinCommand(UUID.randomUUID(), "tester")
-        val serialized = converter.serialize(message)
-        val deserialized = converter.deserialize(serialized)
-        assertEquals(message, deserialized)
-    }
-
-    @Test
-    fun convertsLeaveCommand() {
-        val message = LeaveCommand(UUID.randomUUID(), "tester")
-        val serialized = converter.serialize(message)
-        val deserialized = converter.deserialize(serialized)
-        assertEquals(message, deserialized)
-    }
-
-    @Test
-    fun convertsBroadcastCommand() {
-        val message = BroadcastCommand(UUID.randomUUID(), "tester", "hi mom!")
-        val serialized = converter.serialize(message)
-        val deserialized = converter.deserialize(serialized)
-        assertEquals(message, deserialized)
-    }
-
-    @Test
     fun convertsCreatePlayCommand() {
-        val message = CreatePlayCommand("Test room")
+        val message = CreatePlayCommand("Test play")
+        val serialized = converter.serialize(message)
+        val deserialized = converter.deserialize(serialized)
+        assertEquals(message, deserialized)
+    }
+
+    @Test
+    fun convertsUpdatePlayCommand() {
+        val edited = Play(UUID.randomUUID(), "Test play")
+        val message = UpdatePlayCommand(edited)
         val serialized = converter.serialize(message)
         val deserialized = converter.deserialize(serialized)
         assertEquals(message, deserialized)

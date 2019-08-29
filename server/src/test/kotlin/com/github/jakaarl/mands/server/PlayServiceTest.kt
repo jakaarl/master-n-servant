@@ -21,7 +21,17 @@ class PlayServiceTest {
     fun createsPlay() {
         val service = PlayService()
         val play = service.createPlay("Test play")
-        assertTrue(service.plays.contains(play.id))
+        assertTrue(service.plays.containsKey(play.id))
+    }
+
+    @Test
+    fun updatesPlay() {
+        val original = Play(UUID.randomUUID(), "Original title")
+        val edited = Play(original.id, "Updated title")
+        val service = PlayService(mapOf(Pair(original.id, original)))
+        val updated = service.updatePlay(edited)
+        assertEquals(edited, updated)
+        assertEquals(service.plays[original.id]?.title, edited.title)
     }
 
     @Test
@@ -30,7 +40,7 @@ class PlayServiceTest {
         val service = PlayService(mapOf(Pair(play.id, play)))
         val removedPlay = service.removePlay(play.id)
         assertEquals(play, removedPlay)
-        assertFalse(service.plays.contains(play.id))
+        assertFalse(service.plays.containsKey(play.id))
     }
 
 }

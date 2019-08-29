@@ -8,7 +8,16 @@ class PlayService(internal var plays: Map<UUID,Play> = mapOf()) {
 
     fun createPlay(title: String): Play {
         val play = Play(UUID.randomUUID(), title)
-        plays = plays + Pair(play.id, play)
+        plays += Pair(play.id, play)
+        return play
+    }
+
+    fun updatePlay(play: Play): Play {
+        if (plays.containsKey(play.id)) {
+            plays += Pair(play.id, play)
+        } else {
+            throw java.lang.IllegalArgumentException("No such play: ${play.id}")
+        }
         return play
     }
 
