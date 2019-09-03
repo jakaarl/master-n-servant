@@ -1,7 +1,8 @@
 <div>
   <h2>My Plays</h2>
   <ul *ngIf="plays.length > 0" class="playList">
-    <li *ngFor="let play of plays"><a routerLink="/plays/{{ play.id }}"></a></li>
+    <li *ngFor="let play of plays"><a [routerLink]="['/plays', play.id]">{{ play.title }}</a></li>
   </ul>
   <p *ngIf="plays.length === 0" class="notice">You have no plays.</p>
+  <button (click)="createNewPlay()">Create new play</button>
 </div>

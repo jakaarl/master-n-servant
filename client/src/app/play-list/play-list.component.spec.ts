@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { RouterModule } from '@angular/router';
+import {Router, RouterModule} from '@angular/router';
 import { of } from 'rxjs';
 
 import { PlayListComponent } from './play-list.component';
@@ -16,7 +16,8 @@ describe('PlayListComponent', () => {
       imports: [ HttpClientTestingModule, RouterModule ],
       declarations: [ PlayListComponent ],
       providers: [
-        { provide: PlayService, useValue: playService }
+        { provide: PlayService, useValue: playService },
+        { provide: Router }
       ]
     })
     .compileComponents();

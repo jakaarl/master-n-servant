@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 
 import { PlayEditorComponent } from './play-editor.component';
 import { Play } from '../shared/model/play';
@@ -12,7 +12,10 @@ describe('PlayEditorComponent', () => {
   let component: PlayEditorComponent;
   let fixture: ComponentFixture<PlayEditorComponent>;
 
-  const playService = jasmine.createSpyObj('PlayService', ['updatePlay']);
+  const playService = jasmine.createSpyObj('PlayService', ['fetchPlay', 'updatePlay']);
+  const activatedRoute = {
+    paramMap: of(new Map<string, string>([['id', 'abcd-efgh']]))
+  };
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PlayEditorComponent ],
@@ -22,7 +25,8 @@ describe('PlayEditorComponent', () => {
         RouterModule
       ],
       providers: [
-        { provide: PlayService, useValue: playService }
+        { provide: PlayService, useValue: playService },
+        { provide: ActivatedRoute, useValue: activatedRoute }
       ]
     })
     .compileComponents();
@@ -31,7 +35,7 @@ describe('PlayEditorComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(PlayEditorComponent);
     component = fixture.componentInstance;
-    component.play = new Play(undefined, 'Test play');
+    playService.fetchPlay.and.returnValue(of(new Play(null, 'Test play')));
     fixture.detectChanges();
   });
 
@@ -48,10 +52,13 @@ describe('PlayEditorComponent', () => {
 
   describe('submit', () => {
     it('should update title', () => {
-      const updatedPlay = new Play(undefined, 'Updated play');
+      const updatedPlay = new Play(null, 'Updated play');
       playService.updatePlay.and.returnValue(of(updatedPlay));
       component.onSubmit(updatedPlay);
-      expect(component.play).toEqual(updatedPlay);
+      const componentElement = fixture.debugElement.nativeElement;
+      const inputElement = componentElement.querySelector('input#title');
+      expect(inputElement).not.toBeNull();
+      expect(inputElement.value).toContain('Updated play');
     });
   });
 

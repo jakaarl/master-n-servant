@@ -15,6 +15,10 @@ export class PlayService {
 
   constructor(private http: HttpClient) { }
 
+  fetchPlay(id: string): Observable<Play> {
+    return this.http.get<Play>(`${PlayService.PLAYS_URL}/${id}`);
+  }
+
   listPlays(): Observable<Play[]> {
     return this.http.get<Play[]>(PlayService.PLAYS_URL);
   }
