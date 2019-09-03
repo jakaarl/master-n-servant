@@ -22,6 +22,7 @@ import kotlinx.coroutines.channels.consumeEach
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
+import java.util.*
 
 class KtorApplication {
     companion object {
@@ -69,19 +70,25 @@ class KtorApplication {
 
     private fun Routing.root() {
         get("/plays") {
-            LOGGER.debug("Listing plays.")
+            LOGGER.info("Listing plays.")
             val plays = playService.listPlays()
             call.respond(plays)
         }
+        get("/plays/{id}") {
+            val id = UUID.fromString(call.parameters.get("id"))
+            LOGGER.info("Getting play ${id}")
+            val play = playService.fetchPlay(id)
+            call.respond(play)
+        }
         post("/plays") {
             val createPlay = call.receive<CreatePlayCommand>()
-            LOGGER.debug("Creating play ${createPlay.name}.")
+            LOGGER.info("Creating play ${createPlay.name}.")
             val play = playService.createPlay(createPlay.name)
             call.respond(HttpStatusCode.Created, play)
         }
         patch("/plays") {
             val updatePlay = call.receive<UpdatePlayCommand>()
-            LOGGER.debug("Updating play ${updatePlay.play.id}.")
+            LOGGER.info("Updating play ${updatePlay.play.id}.")
             val updated = playService.updatePlay(updatePlay.play)
             call.respond(HttpStatusCode.OK, updated)
         }

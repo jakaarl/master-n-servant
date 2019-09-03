@@ -4,6 +4,10 @@ import java.util.UUID
 
 class PlayService(internal var plays: Map<UUID,Play> = mapOf()) {
 
+    fun fetchPlay(id: UUID): Play {
+        return plays[id] ?: throw IllegalArgumentException("No such play: ${id}")
+    }
+
     fun listPlays(): Collection<Play> = plays.values
 
     fun createPlay(title: String): Play {
